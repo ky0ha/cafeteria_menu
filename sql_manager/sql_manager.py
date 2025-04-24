@@ -3,16 +3,17 @@ import sqlite3
 class SQLManager:
     def __init__(self, db_name='base.db'):
         self.conn = sqlite3.connect(db_name)
-        self.cursor = self.conn.cursor()
     
     def __enter__(self):
+        self.cursor = self.conn.cursor()
         return self
     
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
     
     def close(self):
-        self.conn.close()
+        if self.cursor:
+            self.cursor.close()
 
     def create_table(self, table_name, columns):
         create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(columns)})"
