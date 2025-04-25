@@ -30,8 +30,10 @@ class SQLManager:
         self.cursor.execute(insert_query, values)
         self.conn.commit()
     
-    def select_from_table(self, table_name, columns, condition=None):
+    def select_from_table(self, table_name, columns, condition=None, prefix=None):
         select_query = f"SELECT {', '.join(columns)} FROM {table_name}"
+        if prefix:
+            select_query = prefix + select_query
         if condition:
             select_query += f" WHERE {condition}"
         self.cursor.execute(select_query)
@@ -46,6 +48,10 @@ class SQLManager:
         delete_query = f"DELETE FROM {table_name} WHERE {condition}"
         self.cursor.execute(delete_query)
         self.conn.commit()
+    
+    def complex_query(self, query):
+        self.cursor.execute(query)
+        return self.cursor.fetchall()
 
 if __name__ == "__main__":
     sql = SQLManager("base.db")
